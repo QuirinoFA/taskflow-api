@@ -3,7 +3,7 @@ package com.taskflow.config;
 import org.glassfish.jersey.internal.inject.AbstractBinder;
 import org.glassfish.jersey.process.internal.RequestScoped;
 
-import com.taskflow.repository.UserRepository;
+import com.taskflow.repositories.user.UserRepository;
 import com.taskflow.service.UserService;
 
 import jakarta.inject.Singleton;
