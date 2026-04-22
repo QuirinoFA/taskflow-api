@@ -38,14 +38,14 @@ public class App {
     private static int resolvePort() {
         String portValue = System.getenv("APP_PORT");
         if (portValue == null) {
-            return 8080;
+            return 8082;
         }
 
         try {
             return Integer.parseInt(portValue);
         } catch (NumberFormatException ex) {
-            LOGGER.warning("APP_PORT invalida. Usando 8080 por padrao.");
-            return 8080;
+            LOGGER.warning("APP_PORT invalida. Usando 8082 por padrao.");
+            return 8082;
         }
     }
 }
