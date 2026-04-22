@@ -9,6 +9,9 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.PersistenceException;
 
+import java.util.List;
+import java.util.ArrayList;
+
 public class UserRepositoryImpl implements UserRepository {
 
     private final Provider<EntityManager> em;
@@ -35,7 +38,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public void updateUser(User user) {
+    public void updateUser(Long id, User user) {
         EntityManager entityManager = em.get();
         EntityTransaction transaction = entityManager.getTransaction();
         try {
@@ -49,6 +52,7 @@ public class UserRepositoryImpl implements UserRepository {
             throw new UserPersistenceException("Error updating user", e);
         }
     }
+    
     @Override
     public User findUserById(Long id) {
         EntityManager entityManager = em.get();
@@ -80,6 +84,18 @@ public class UserRepositoryImpl implements UserRepository {
                 transaction.rollback();
             }
             throw new UserPersistenceException("Error deleting user with id: " + id, e);
+        }
+    }
+
+    @Override
+    public List<User> findAllUsers() {
+        EntityManager entityManager = em.get();
+        try {
+            List<User> users = entityManager.createQuery("SELECT u FROM User u", User.class).getResultList();
+            return users;
+        }
+        catch (PersistenceException e) {
+            throw new PersistenceException("Error finding all users", e);
         }
     }
 }

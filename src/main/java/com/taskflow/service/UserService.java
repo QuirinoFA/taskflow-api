@@ -1,7 +1,10 @@
 package com.taskflow.service;
 
+import java.util.List;
+
 import com.taskflow.common.exceptions.ValidationException;
 import com.taskflow.controller.user.dto.PrintUserDto;
+import com.taskflow.controller.user.dto.UpdateUserDto;
 import com.taskflow.model.User;
 import com.taskflow.repositories.user.UserRepository;
 
@@ -23,12 +26,6 @@ public class UserService {
     }
 
 
-    public void printUser(PrintUserDto printUserDto) {
-        System.out.println(printUserDto.getName());
-        System.out.println(printUserDto.getAge());
-        System.out.println(printUserDto.getGender());
-    }
-
     public void createUser(PrintUserDto createUserDto) {
         validate(createUserDto);
 
@@ -40,20 +37,22 @@ public class UserService {
             userRepository.createUser(user);
     }
 
-    public User updateUser(PrintUserDto updateUserDto) {
-        validate(updateUserDto);
-
-        User user = userRepository.findUserById(updateUserDto.getId());
-        if (user != null) {
-            user.setName(updateUserDto.getName().trim());
-            user.setAge(updateUserDto.getAge());
-            user.setGender(updateUserDto.getGender());
-            userRepository.updateUser(user);
-            return user;
+    public User updateUser(Long id, UpdateUserDto updateUserDto) {
+        if (updateUserDto == null || id == null) {
+            throw new ValidationException("Request body and User ID are required");
         }
-        else {
+
+        User user = userRepository.findUserById(id);
+        
+        if (user == null) {
             throw new ValidationException("User with Id not found");
         }
+
+        user.setName(updateUserDto.getName() != null ? updateUserDto.getName().trim() : user.getName());
+        user.setAge(updateUserDto.getAge() != null ? updateUserDto.getAge() : user.getAge());
+        user.setGender(updateUserDto.getGender() != null ? updateUserDto.getGender().trim() : user.getGender());
+        userRepository.updateUser(id, user);
+        return user;
     }
 
     public User findUserById(Long id) {
@@ -76,6 +75,10 @@ public class UserService {
         else {
             userRepository.deleteUser(id);
         }
+    }
+
+    public List<User> findAllUsers() {
+        return userRepository.findAllUsers();
     }
 
     private void validate(PrintUserDto dto) {
